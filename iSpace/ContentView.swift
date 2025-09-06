@@ -7,16 +7,27 @@
 
 import SwiftUI
 
+// This view acts as a router, showing the lock screen or the main list.
 struct ContentView: View {
+    @EnvironmentObject var viewModel: AppViewModel
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if viewModel.isLocked {
+                LockScreenView()
+            } else {
+                ItemsListView()
+            }
         }
-        .padding()
+        .alert(item: $viewModel.alertMessage) { message in
+            Alert(title: Text("Error"), message: Text(message), dismissButton: .default(Text("OK")))
+        }
     }
+}
+
+// This extension allows us to use a String directly with the .alert modifier.
+extension String: Identifiable {
+    public var id: String { self }
 }
 
 #Preview {
