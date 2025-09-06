@@ -19,6 +19,15 @@ class AppViewModel: ObservableObject {
     
     let dataService = DataService()
 
+    // NEW: Computed properties to filter items for the tabs
+    var cardItems: [StoredItem] {
+        items.filter { $0.type == .card }
+    }
+
+    var passwordItems: [StoredItem] {
+        items.filter { $0.type == .password }
+    }
+
     init() {
         fetchItems()
     }
@@ -55,6 +64,8 @@ class AppViewModel: ObservableObject {
     
     func addItem(_ item: StoredItem) {
         items.append(item)
+        // Sort items to keep them grouped by type
+        items.sort { $0.type.rawValue > $1.type.rawValue }
         dataService.saveItemsList(items)
     }
     
@@ -63,15 +74,9 @@ class AppViewModel: ObservableObject {
     }
     
     func deleteItem(at offsets: IndexSet) {
-        offsets.forEach { index in
-            let itemToDelete = items[index]
-            do {
-                try dataService.deleteData(for: itemToDelete.id.uuidString)
-                items.remove(at: index)
-            } catch {
-                 alertMessage = "Failed to delete item: \(error.localizedDescription)"
-            }
-        }
+        // This method works on the main 'items' array.
+        // The view will provide the correct indices from the main source of truth.
+        items.remove(atOffsets: offsets)
         dataService.saveItemsList(items)
     }
 }
@@ -149,3 +154,4 @@ class ItemDetailViewModel: ObservableObject {
         }
     }
 }
+

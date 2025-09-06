@@ -16,7 +16,7 @@ struct ContentView: View {
             if viewModel.isLocked {
                 LockScreenView()
             } else {
-                ItemsListView()
+                MainTabView()
             }
         }
         .alert(item: $viewModel.alertMessage) { message in
