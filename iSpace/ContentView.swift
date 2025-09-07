@@ -26,10 +26,10 @@ struct ContentView: View {
 }
 
 // This extension allows us to use a String directly with the .alert modifier.
-extension String: Identifiable {
+extension String: @retroactive Identifiable {
     public var id: String { self }
 }
 
-#Preview {
-    ContentView()
-}
+//#Preview {
+//    ContentView()
+//}

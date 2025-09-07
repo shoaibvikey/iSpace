@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct ItemDetailView: View {
+    @EnvironmentObject var appViewModel: AppViewModel
     @StateObject private var viewModel: ItemDetailViewModel
+    @Environment(\.dismiss) private var dismiss
     
-    // The view is initialized with the data it needs to create its ViewModel.
+    // We add this property to have direct access to the item
+    let item: StoredItem
+    
     init(item: StoredItem, dataService: DataService) {
+        self.item = item
         _viewModel = StateObject(wrappedValue: ItemDetailViewModel(item: item, dataService: dataService))
     }
 
@@ -31,15 +36,34 @@ struct ItemDetailView: View {
                     SecretInfoRow(label: "CVV", value: details.cvv)
                 }
             }
+            
+            Section {
+                Button(role: .destructive) {
+                    viewModel.showDeleteAlert = true
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+            }
+            .foregroundStyle(Color.red)
+            
         }
-        .navigationTitle("Item Details")
+        // UPDATED: The navigation title now uses the item's name
+        .navigationTitle(item.name)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: viewModel.loadDetails)
-        .alert(item: $viewModel.alertMessage) { message in
-            Alert(title: Text("Error"), message: Text(message), dismissButton: .default(Text("OK")))
+        .alert("Are you sure?", isPresented: $viewModel.showDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                viewModel.confirmDeletion(appViewModel: appViewModel)
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("This action cannot be undone.")
         }
     }
 }
+
 
 
 //#Preview {

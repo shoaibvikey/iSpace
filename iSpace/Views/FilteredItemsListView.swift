@@ -9,7 +9,6 @@ import SwiftUI
 
 struct FilteredItemsListView: View {
     @EnvironmentObject var viewModel: AppViewModel
-    
     let items: [StoredItem]
     let itemType: ItemType
 
@@ -27,32 +26,26 @@ struct FilteredItemsListView: View {
                     }
                 }
             }
-            .onDelete(perform: delete)
+            // REMOVED: .onDelete and .onMove modifiers are gone
         }
         .listStyle(InsetGroupedListStyle())
         .overlay {
-            if items.isEmpty {
-                let typeName = (itemType == .card) ? "cards" : "passwords"
-                Text("No \(typeName) yet.\nTap '+' to add one.")
-                    .font(.title3)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-        }
+                    if items.isEmpty {
+                        EmptyStateView(
+                            iconName: "key.horizontal.fill",
+                            message: "Your passwords will appear here.\nTap '+' to get started."
+                        )
+                    }
+                }
     }
     
-    // This function finds the correct item in the main 'items' array to delete.
-    private func delete(at offsets: IndexSet) {
-        let itemsToDelete = offsets.map { items[$0] }
-        let indicesInMainArray = itemsToDelete.compactMap { itemToDelete in
-            viewModel.items.firstIndex(where: { $0.id == itemToDelete.id })
-        }
-        
-        guard !indicesInMainArray.isEmpty else { return }
-        
-        viewModel.deleteItem(at: IndexSet(indicesInMainArray))
-    }
+    // REMOVED: The delete and move functions are no longer needed here
 }
+
+
+
+
+
 
 
 //#Preview {

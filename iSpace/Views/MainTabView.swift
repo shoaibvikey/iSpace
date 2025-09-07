@@ -15,7 +15,7 @@ struct MainTabView: View {
         TabView {
             // Cards Tab
             NavigationStack {
-                FilteredItemsListView(items: viewModel.cardItems, itemType: .card)
+                CardDeckView(items: viewModel.cardItems)
                     .navigationTitle("My Cards")
                     .toolbar { toolbarContent }
             }
@@ -38,18 +38,18 @@ struct MainTabView: View {
         }
     }
     
-    // Common toolbar for both tabs to reduce code duplication
+    // REVERTED: The toolbar is back to its original state
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .navigationBarLeading) {
-            Button(action: viewModel.lock) { Image(systemName: "lock.fill") }
-        }
         ToolbarItem(placement: .navigationBarTrailing) {
             Button(action: { showingAddItemSheet = true }) { Image(systemName: "plus") }
         }
     }
 }
 
-#Preview {
-    MainTabView()
-}
+
+
+
+//#Preview {
+//    MainTabView()
+//}
