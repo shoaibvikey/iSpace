@@ -66,7 +66,6 @@ struct AddItemView: View {
                 error: viewModel.cardNumberError
             )
             .keyboardType(.numberPad)
-            // FIXED: Updated to the new onChange syntax
             .onChange(of: viewModel.cardNumber) { _, newValue in
                 formatCardNumber(newValue: newValue)
             }
@@ -78,7 +77,6 @@ struct AddItemView: View {
                     error: viewModel.expiryError
                 )
                 .keyboardType(.numberPad)
-                // FIXED: Updated to the new onChange syntax
                 .onChange(of: viewModel.expiry) { _, newValue in
                     formatExpiryDate(newValue: newValue)
                 }
@@ -89,16 +87,13 @@ struct AddItemView: View {
                     error: viewModel.cvvError
                 )
                 .keyboardType(.numberPad)
-                // FIXED: Updated to the new onChange syntax
                 .onChange(of: viewModel.cvv) { _, newValue in
-                    // Limit CVV to 4 digits
                     viewModel.cvv = String(newValue.prefix(4))
                 }
             }
         }
     }
     
-    // --- Formatting Logic ---
     private func formatCardNumber(newValue: String) {
         let filtered = newValue.filter { $0.isNumber }
         var result = ""
@@ -128,7 +123,6 @@ struct AddItemView: View {
     }
 }
 
-// NEW: A reusable helper view for text fields with validation errors
 struct ValidatedField: View {
     let title: String
     @Binding var text: String
@@ -143,7 +137,7 @@ struct ValidatedField: View {
                     .foregroundColor(.red)
             }
         }
-        .padding(.bottom, error == nil ? 0 : 8) // Add padding only when error is visible
+        .padding(.bottom, error == nil ? 0 : 8)
     }
 }
 

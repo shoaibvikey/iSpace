@@ -166,12 +166,32 @@ class AppViewModel: ObservableObject {
     @Published var items: [StoredItem] = []
     @Published var isLocked = true
     @Published var alertMessage: String?
+    @Published var searchText = ""
     
     let dataService = DataService()
 
     init() {
         fetchItems()
     }
+    
+    var filteredCardItems: [StoredItem] {
+            let allCards = items.filter { $0.type == .card }
+            if searchText.isEmpty {
+                return allCards
+            } else {
+                return allCards.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+            }
+        }
+        
+        // UPDATED: This property now filters passwords based on the searchText
+    var filteredPasswordItems: [StoredItem] {
+            let allPasswords = items.filter { $0.type == .password }
+            if searchText.isEmpty {
+                return allPasswords
+            } else {
+                return allPasswords.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+            }
+        }
     
     var cardItems: [StoredItem] {
         items.filter { $0.type == .card }

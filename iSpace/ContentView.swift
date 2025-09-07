@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// This view acts as a router, showing the lock screen or the main list.
 struct ContentView: View {
     @EnvironmentObject var viewModel: AppViewModel
 
@@ -25,7 +24,7 @@ struct ContentView: View {
     }
 }
 
-// This extension allows us to use a String directly with the .alert modifier.
+
 extension String: @retroactive Identifiable {
     public var id: String { self }
 }

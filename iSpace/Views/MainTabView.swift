@@ -13,9 +13,8 @@ struct MainTabView: View {
 
     var body: some View {
         TabView {
-            // Cards Tab
             NavigationStack {
-                CardDeckView(items: viewModel.cardItems)
+                CardDeckView(items: viewModel.filteredCardItems)
                     .navigationTitle("My Cards")
                     .toolbar { toolbarContent }
             }
@@ -23,9 +22,8 @@ struct MainTabView: View {
                 Label("Cards", systemImage: "creditcard.fill")
             }
 
-            // Passwords Tab
             NavigationStack {
-                FilteredItemsListView(items: viewModel.passwordItems, itemType: .password)
+                FilteredItemsListView(items: viewModel.filteredPasswordItems, itemType: .password)
                     .navigationTitle("My Passwords")
                     .toolbar { toolbarContent }
             }
@@ -33,12 +31,12 @@ struct MainTabView: View {
                 Label("Passwords", systemImage: "key.fill")
             }
         }
+        .searchable(text: $viewModel.searchText, prompt: "Search Card or Password")
         .sheet(isPresented: $showingAddItemSheet) {
             AddItemView()
         }
     }
     
-    // REVERTED: The toolbar is back to its original state
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
@@ -46,6 +44,8 @@ struct MainTabView: View {
         }
     }
 }
+
+
 
 
 

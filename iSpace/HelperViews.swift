@@ -24,14 +24,11 @@ struct EmptyStateView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
         }
-        // This ensures the view takes up the whole space and fixes text wrapping
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // Match the background color of the list style
         .background(Color(.systemGroupedBackground))
     }
 }
 
-// These small, reusable views are kept in their own file for organization.
 
 struct InfoRow: View {
     let label: String

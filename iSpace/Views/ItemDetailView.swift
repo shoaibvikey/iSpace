@@ -12,7 +12,6 @@ struct ItemDetailView: View {
     @StateObject private var viewModel: ItemDetailViewModel
     @Environment(\.dismiss) private var dismiss
     
-    // We add this property to have direct access to the item
     let item: StoredItem
     
     init(item: StoredItem, dataService: DataService) {
@@ -30,7 +29,7 @@ struct ItemDetailView: View {
                 }
                 
                 if let details = viewModel.cardDetails {
-                    InfoRow(label: "Card Holder", value: details.cardHolderName)
+                    InfoRow(label: "Card Holder Name", value: details.cardHolderName)
                     SecretInfoRow(label: "Card Number", value: details.cardNumber)
                     InfoRow(label: "Expiry", value: details.expiryDate)
                     SecretInfoRow(label: "CVV", value: details.cvv)
@@ -48,7 +47,6 @@ struct ItemDetailView: View {
             .foregroundStyle(Color.red)
             
         }
-        // UPDATED: The navigation title now uses the item's name
         .navigationTitle(item.name)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: viewModel.loadDetails)

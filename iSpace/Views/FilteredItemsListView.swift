@@ -26,7 +26,6 @@ struct FilteredItemsListView: View {
                     }
                 }
             }
-            // REMOVED: .onDelete and .onMove modifiers are gone
         }
         .listStyle(InsetGroupedListStyle())
         .overlay {
@@ -38,8 +37,6 @@ struct FilteredItemsListView: View {
                     }
                 }
     }
-    
-    // REMOVED: The delete and move functions are no longer needed here
 }
 
 

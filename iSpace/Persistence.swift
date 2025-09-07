@@ -8,10 +8,7 @@
 import Foundation
 import Security
 
-// MARK: - 2. Services
-// This file contains services responsible for data persistence.
 
-// The KeychainHelper is a low-level service focused only on Keychain interaction.
 class KeychainHelper {
     static let shared = KeychainHelper()
     private let service = "com.yourapp.securevault"
@@ -72,7 +69,6 @@ class KeychainHelper {
     }
 }
 
-// DataService abstracts away the persistence logic from ViewModels.
 class DataService {
     private let itemsKey = "storedItemsList"
 
