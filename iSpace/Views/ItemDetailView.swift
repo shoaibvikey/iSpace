@@ -23,16 +23,18 @@ struct ItemDetailView: View {
         Form {
             Section(header: Text("Details")) {
                 if let details = viewModel.passwordDetails {
-                    InfoRow(label: "Website", value: details.website)
-                    InfoRow(label: "Username", value: details.username)
-                    SecretInfoRow(label: "Password", value: details.secret)
+                    WebsiteRow(label: "Website", value: details.website)
+                    CopyableInfoRow(label: "Username", value: details.username)
+                    CopyableInfoRow(label: "Password", value: details.secret, isSecret: true)
                 }
                 
                 if let details = viewModel.cardDetails {
                     InfoRow(label: "Card Holder Name", value: details.cardHolderName)
-                    SecretInfoRow(label: "Card Number", value: details.cardNumber)
+                    CopyableInfoRow(label: "Card Number", value: details.cardNumber, isSecret: true)
                     InfoRow(label: "Expiry", value: details.expiryDate)
-                    SecretInfoRow(label: "CVV", value: details.cvv)
+                    CopyableInfoRow(label: "CVV", value: details.cvv, isSecret: true)
+                    
+                   
                 }
             }
             

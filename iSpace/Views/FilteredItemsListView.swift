@@ -32,8 +32,8 @@ struct FilteredItemsListView: View {
                     if items.isEmpty {
                         if viewModel.searchText.isEmpty {
                                             EmptyStateView(
-                                                iconName: "creditcard.and.123",
-                                                message: "Your cards will appear here.\nTap '+' to get started."
+                                                iconName: "lock.slash",
+                                                message: "Your passwords will appear here.\nTap '+' to get started."
                                             )
                                         } else {
                                             EmptyStateView(

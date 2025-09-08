@@ -31,7 +31,7 @@ struct LockScreenView: View {
                 .font(.headline)
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color.blue)
+                .background(Color.accent)
                 .foregroundColor(.white)
                 .cornerRadius(12)
             }

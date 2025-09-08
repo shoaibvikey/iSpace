@@ -10,6 +10,7 @@ import SwiftUI
 struct MainTabView: View {
     @EnvironmentObject var viewModel: AppViewModel
     @State private var showingAddItemSheet = false
+    
 
     var body: some View {
         TabView {
@@ -17,6 +18,7 @@ struct MainTabView: View {
                 CardDeckView(items: viewModel.filteredCardItems)
                     .navigationTitle("My Cards")
                     .toolbar { toolbarContent }
+                    .searchable(text: $viewModel.searchText, prompt: "Search cards")
             }
             .tabItem {
                 Label("Cards", systemImage: "creditcard.fill")
@@ -26,12 +28,12 @@ struct MainTabView: View {
                 FilteredItemsListView(items: viewModel.filteredPasswordItems, itemType: .password)
                     .navigationTitle("My Passwords")
                     .toolbar { toolbarContent }
+                    .searchable(text: $viewModel.searchText, prompt: "Search passwords")
             }
             .tabItem {
                 Label("Passwords", systemImage: "key.fill")
             }
         }
-        .searchable(text: $viewModel.searchText, prompt: "Search Card or Password")
         .sheet(isPresented: $showingAddItemSheet) {
             AddItemView()
         }
