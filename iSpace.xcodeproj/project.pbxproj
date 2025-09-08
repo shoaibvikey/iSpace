@@ -29,9 +29,22 @@
 		F584064E2E6C3E460017350D /* iSpaceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iSpaceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F58406842E6EDBCA0017350D /* Exceptions for "iSpace" folder in "iSpace" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F58406362E6C3E450017350D /* iSpace */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F58406392E6C3E450017350D /* iSpace */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F58406842E6EDBCA0017350D /* Exceptions for "iSpace" folder in "iSpace" target */,
+			);
 			path = iSpace;
 			sourceTree = "<group>";
 		};
@@ -400,7 +413,9 @@
 				DEVELOPMENT_TEAM = FFSM2YBVCB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iSpace/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iSpace;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "iSpace uses Face ID to securely unlock your vault.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -428,7 +443,9 @@
 				DEVELOPMENT_TEAM = FFSM2YBVCB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iSpace/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iSpace;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "iSpace uses Face ID to securely unlock your vault.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
