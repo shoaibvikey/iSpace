@@ -18,16 +18,27 @@ struct ContentView: View {
                 MainTabView()
             }
         }
-        .alert(item: $viewModel.alertMessage) { message in
-            Alert(title: Text("Error"), message: Text(message), dismissButton: .default(Text("OK")))
+        // FIXED: Updated to use the new 'alertItem' property
+        .alert(item: $viewModel.alertItem) { alertItem in
+            Alert(
+                title: Text(alertItem.title),
+                message: Text(alertItem.message),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
 }
 
+// REMOVED: The old String extension that was causing the second error.
 
-extension String: @retroactive Identifiable {
-    public var id: String { self }
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .environmentObject(AppViewModel())
+    }
 }
+
+
 
 //#Preview {
 //    ContentView()

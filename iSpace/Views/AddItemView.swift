@@ -36,7 +36,10 @@ struct AddItemView: View {
             .navigationTitle("Add New Item")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel") {
+                        viewModel.cancelAndClearDraft()
+                        dismiss()
+                    }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {

@@ -30,10 +30,17 @@ struct FilteredItemsListView: View {
         .listStyle(InsetGroupedListStyle())
         .overlay {
                     if items.isEmpty {
-                        EmptyStateView(
-                            iconName: "key.horizontal.fill",
-                            message: "Your passwords will appear here.\nTap '+' to get started."
-                        )
+                        if viewModel.searchText.isEmpty {
+                                            EmptyStateView(
+                                                iconName: "creditcard.and.123",
+                                                message: "Your cards will appear here.\nTap '+' to get started."
+                                            )
+                                        } else {
+                                            EmptyStateView(
+                                                iconName: "magnifyingglass",
+                                                message: "No results found for \"\(viewModel.searchText)\""
+                                            )
+                                        }
                     }
                 }
     }

@@ -12,16 +12,32 @@ import SwiftUI
 struct iSpaceApp: App {
     @StateObject private var viewModel = AppViewModel()
     @Environment(\.scenePhase) private var scenePhase
+    
+    init() {
+            UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.accent]
+            UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.accent]
+            UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.accent
+            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
+        }
+
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(viewModel)
+                .tint(.accent)
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
-            if newPhase == .inactive || newPhase == .background {
-                viewModel.lock()
-            }
-        }
+                    if newPhase == .background || newPhase == .inactive {
+                        viewModel.lastInactiveDate = Date()
+                    } else if newPhase == .active {
+                        guard let lastInactive = viewModel.lastInactiveDate else { return }
+                        let gracePeriod: TimeInterval = 5
+                        
+                        if Date().timeIntervalSince(lastInactive) > gracePeriod {
+                            viewModel.lock()
+                        }
+                    }
+                }
     }
 }

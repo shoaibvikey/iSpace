@@ -14,10 +14,12 @@ struct LockScreenView: View {
         VStack(spacing: 40) {
             Image(systemName: "lock.shield.fill")
                 .font(.system(size: 80))
-                .foregroundStyle(.blue)
+                .foregroundStyle(.accent)
             
-            Text("Vault Locked")
+            Text("iSpace Locked")
                 .font(.largeTitle.bold())
+                .foregroundStyle(.accent)
+                
             
             Button(action: {
                 viewModel.authenticate()
@@ -42,6 +44,6 @@ struct LockScreenView: View {
 }
 
 
-#Preview {
-    LockScreenView()
-}
+//#Preview {
+//    LockScreenView()
+//}

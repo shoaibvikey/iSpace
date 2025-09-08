@@ -13,10 +13,17 @@ struct CardDeckView: View {
 
     var body: some View {
         if items.isEmpty {
-            EmptyStateView(
-                iconName: "creditcard.and.123",
-                message: "Your cards will appear here.\nTap '+' to get started."
-            )
+            if viewModel.searchText.isEmpty {
+                                EmptyStateView(
+                                    iconName: "creditcard.and.123",
+                                    message: "Your cards will appear here.\nTap '+' to get started."
+                                )
+                            } else {
+                                EmptyStateView(
+                                    iconName: "magnifyingglass",
+                                    message: "No results found for \"\(viewModel.searchText)\""
+                                )
+                            }
         } else {
             ScrollView {
                 VStack(spacing: 16) {

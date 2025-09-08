@@ -45,13 +45,14 @@ struct CreditCardView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
                 .fill(
+                    
                     LinearGradient(
-                        gradient: Gradient(colors: [Color(white: 0.1), Color(white: 0.25)]),
+                        gradient: Gradient(colors: [.accent,Color.black.opacity(0.9),Color.black.opacity(0.9),.accent]),
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
-                .shadow(color: .black.opacity(0.4), radius: 10, x: 0, y: 5)
+                .shadow(color: .accentColor.opacity(0.4), radius: 10, x: 0, y: 5)
 
             VStack {
                 ForEach(0..<10) { i in
@@ -78,7 +79,7 @@ struct CreditCardView: View {
                 
                 Image(systemName: "simcard.fill")
                     .font(.largeTitle)
-                    .foregroundColor(.yellow.opacity(0.8))
+                    .foregroundColor(.white.opacity(0.8))
                 
                 Text(formattedCardNumber)
                     .font(.custom("Courier", size: 22).bold())

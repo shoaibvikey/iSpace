@@ -9,12 +9,17 @@ import SwiftUI
 import LocalAuthentication
 import Combine
 
-// ViewModel for the ItemDetailView
+struct AlertItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let message: String
+}
+
 @MainActor
 class ItemDetailViewModel: ObservableObject {
     @Published var passwordDetails: PasswordDetails?
     @Published var cardDetails: CardDetails?
-    @Published var alertMessage: String?
+    @Published var alertItem: AlertItem?
     @Published var showDeleteAlert = false
 
     private let item: StoredItem
@@ -34,7 +39,7 @@ class ItemDetailViewModel: ObservableObject {
                 self.cardDetails = try dataService.getDecryptedDetails(for: item)
             }
         } catch {
-            alertMessage = "Failed to decrypt data: \(error.localizedDescription)"
+            alertItem = AlertItem(title: "Error", message: "Failed to decrypt data: \(error.localizedDescription)")
         }
     }
 
@@ -43,10 +48,20 @@ class ItemDetailViewModel: ObservableObject {
     }
 }
 
-// ViewModel for the AddItemView
+struct DraftItem: Codable {
+    var selectedType: ItemType = .password
+    var name = ""
+    var website = ""
+    var username = ""
+    var secret = ""
+    var cardHolder = ""
+    var cardNumber = ""
+    var expiry = ""
+    var cvv = ""
+}
+
 @MainActor
 class AddItemViewModel: ObservableObject {
-    // Form fields
     @Published var selectedType: ItemType = .password
     @Published var name = ""
     @Published var website = ""
@@ -57,16 +72,17 @@ class AddItemViewModel: ObservableObject {
     @Published var expiry = ""
     @Published var cvv = ""
     
-    // Validation error messages
     @Published var nameError: String?
     @Published var cardNumberError: String?
     @Published var expiryError: String?
     @Published var cvvError: String?
 
+    static let draftKey = "addItemFormDraft"
     private var cancellables = Set<AnyCancellable>()
 
     init() {
-        // FIXED: Broke the single large publisher into two smaller, nested ones.
+        loadDraft()
+        
         let textFields1 = Publishers.CombineLatest4($name, $website, $username, $secret)
         let textFields2 = Publishers.CombineLatest4($cardHolder, $cardNumber, $expiry, $cvv)
         
@@ -75,6 +91,7 @@ class AddItemViewModel: ObservableObject {
             .receive(on: RunLoop.main)
             .sink { [weak self] in
                 self?.validateFields()
+                self?.saveDraft()
             }
             .store(in: &cancellables)
             
@@ -82,6 +99,7 @@ class AddItemViewModel: ObservableObject {
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 self?.validateFields()
+                self?.saveDraft()
             }
             .store(in: &cancellables)
     }
@@ -154,51 +172,77 @@ class AddItemViewModel: ObservableObject {
                 newItem = StoredItem(id: newItemId, name: name, type: selectedType)
             }
             appViewModel.addItem(newItem)
+            clearDraft()
         } catch {
-            appViewModel.alertMessage = "Error encoding data: \(error.localizedDescription)"
+            appViewModel.alertItem = AlertItem(title: "Error", message: "Error encoding data: \(error.localizedDescription)")
         }
+    }
+    
+    func cancelAndClearDraft() {
+        clearDraft()
+    }
+    
+    private func saveDraft() {
+        let draft = DraftItem(selectedType: self.selectedType, name: self.name, website: self.website, username: self.username, secret: self.secret, cardHolder: self.cardHolder, cardNumber: self.cardNumber, expiry: self.expiry, cvv: self.cvv)
+        if let data = try? JSONEncoder().encode(draft) {
+            // FIXED: Use Self.draftKey to access the static property
+            UserDefaults.standard.set(data, forKey: Self.draftKey)
+        }
+    }
+
+    private func loadDraft() {
+        // FIXED: Use Self.draftKey to access the static property
+        guard let data = UserDefaults.standard.data(forKey: Self.draftKey),
+              let draft = try? JSONDecoder().decode(DraftItem.self, from: data) else { return }
+        
+        self.selectedType = draft.selectedType
+        self.name = draft.name
+        self.website = draft.website
+        self.username = draft.username
+        self.secret = draft.secret
+        self.cardHolder = draft.cardHolder
+        self.cardNumber = draft.cardNumber
+        self.expiry = draft.expiry
+        self.cvv = draft.cvv
+    }
+    
+    private func clearDraft() {
+        // FIXED: Use Self.draftKey to access the static property
+        UserDefaults.standard.removeObject(forKey: Self.draftKey)
     }
 }
 
-// Main AppViewModel
 @MainActor
 class AppViewModel: ObservableObject {
     @Published var items: [StoredItem] = []
     @Published var isLocked = true
-    @Published var alertMessage: String?
+    @Published var alertItem: AlertItem?
     @Published var searchText = ""
     
+    var lastInactiveDate: Date?
     let dataService = DataService()
 
     init() {
+        UserDefaults.standard.removeObject(forKey: AddItemViewModel.draftKey)
         fetchItems()
     }
     
     var filteredCardItems: [StoredItem] {
-            let allCards = items.filter { $0.type == .card }
-            if searchText.isEmpty {
-                return allCards
-            } else {
-                return allCards.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-            }
+        let allCards = items.filter { $0.type == .card }
+        if searchText.isEmpty {
+            return allCards
+        } else {
+            return allCards.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
-        
-        // UPDATED: This property now filters passwords based on the searchText
-    var filteredPasswordItems: [StoredItem] {
-            let allPasswords = items.filter { $0.type == .password }
-            if searchText.isEmpty {
-                return allPasswords
-            } else {
-                return allPasswords.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-            }
-        }
-    
-    var cardItems: [StoredItem] {
-        items.filter { $0.type == .card }
     }
     
-    var passwordItems: [StoredItem] {
-        items.filter { $0.type == .password }
+    var filteredPasswordItems: [StoredItem] {
+        let allPasswords = items.filter { $0.type == .password }
+        if searchText.isEmpty {
+            return allPasswords
+        } else {
+            return allPasswords.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        }
     }
     
     func authenticate() {
@@ -212,12 +256,12 @@ class AppViewModel: ObservableObject {
                     if success {
                         self.isLocked = false
                     } else {
-                        self.alertMessage = "Authentication failed."
+                        self.alertItem = AlertItem(title: "Error", message: "Authentication failed.")
                     }
                 }
             }
         } else {
-            self.alertMessage = "Biometrics not available. Please enable Face ID/Touch ID or a passcode in your device settings."
+            self.alertItem = AlertItem(title: "Error", message: "Biometrics not available.")
         }
     }
 
@@ -245,9 +289,11 @@ class AppViewModel: ObservableObject {
                 items.removeAll { $0.id == id }
                 dataService.saveItemsList(items)
             } catch {
-                 alertMessage = "Failed to delete item: \(error.localizedDescription)"
+                 alertItem = AlertItem(title: "Error", message: "Failed to delete item: \(error.localizedDescription)")
             }
         }
     }
 }
+
+
 
