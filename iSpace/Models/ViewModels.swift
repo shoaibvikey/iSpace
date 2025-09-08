@@ -82,7 +82,10 @@ class AddItemViewModel: ObservableObject {
 
     init() {
         loadDraft()
-        
+        setupSubscribers()
+    }
+    
+    private func setupSubscribers() {
         let textFields1 = Publishers.CombineLatest4($name, $website, $username, $secret)
         let textFields2 = Publishers.CombineLatest4($cardHolder, $cardNumber, $expiry, $cvv)
         
@@ -157,6 +160,8 @@ class AddItemViewModel: ObservableObject {
     }
     
     func saveItem(appViewModel: AppViewModel) {
+        cancelSubscriptions()
+        
         let newItemId = UUID()
         let newItem: StoredItem
         
@@ -179,7 +184,13 @@ class AddItemViewModel: ObservableObject {
     }
     
     func cancelAndClearDraft() {
+        cancelSubscriptions()
         clearDraft()
+    }
+    
+    private func cancelSubscriptions() {
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
     }
     
     private func saveDraft() {
