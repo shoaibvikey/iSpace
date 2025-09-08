@@ -185,13 +185,11 @@ class AddItemViewModel: ObservableObject {
     private func saveDraft() {
         let draft = DraftItem(selectedType: self.selectedType, name: self.name, website: self.website, username: self.username, secret: self.secret, cardHolder: self.cardHolder, cardNumber: self.cardNumber, expiry: self.expiry, cvv: self.cvv)
         if let data = try? JSONEncoder().encode(draft) {
-            // FIXED: Use Self.draftKey to access the static property
             UserDefaults.standard.set(data, forKey: Self.draftKey)
         }
     }
 
     private func loadDraft() {
-        // FIXED: Use Self.draftKey to access the static property
         guard let data = UserDefaults.standard.data(forKey: Self.draftKey),
               let draft = try? JSONDecoder().decode(DraftItem.self, from: data) else { return }
         
@@ -207,13 +205,14 @@ class AddItemViewModel: ObservableObject {
     }
     
     private func clearDraft() {
-        // FIXED: Use Self.draftKey to access the static property
         UserDefaults.standard.removeObject(forKey: Self.draftKey)
     }
 }
 
 @MainActor
 class AppViewModel: ObservableObject {
+    @Published var showOnboarding: Bool
+    
     @Published var items: [StoredItem] = []
     @Published var isLocked = true
     @Published var alertItem: AlertItem?
@@ -221,10 +220,20 @@ class AppViewModel: ObservableObject {
     
     var lastInactiveDate: Date?
     let dataService = DataService()
+    private let onboardingKey = "hasCompletedOnboarding"
 
     init() {
+        let hasCompleted = UserDefaults.standard.bool(forKey: onboardingKey)
+        self.showOnboarding = !hasCompleted
+        
         UserDefaults.standard.removeObject(forKey: AddItemViewModel.draftKey)
+        
         fetchItems()
+    }
+    
+    func completeOnboarding() {
+        showOnboarding = false
+        UserDefaults.standard.set(true, forKey: onboardingKey)
     }
     
     var filteredCardItems: [StoredItem] {
@@ -294,6 +303,4 @@ class AppViewModel: ObservableObject {
         }
     }
 }
-
-
 

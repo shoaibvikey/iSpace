@@ -11,20 +11,24 @@ struct ContentView: View {
     @EnvironmentObject var viewModel: AppViewModel
 
     var body: some View {
-        Group {
-            if viewModel.isLocked {
-                LockScreenView()
-            } else {
-                MainTabView()
+        if viewModel.showOnboarding {
+                    OnboardingView()
+        } else {
+            Group {
+                if viewModel.isLocked {
+                    LockScreenView()
+                } else {
+                    MainTabView()
+                }
             }
-        }
-        // FIXED: Updated to use the new 'alertItem' property
-        .alert(item: $viewModel.alertItem) { alertItem in
-            Alert(
-                title: Text(alertItem.title),
-                message: Text(alertItem.message),
-                dismissButton: .default(Text("OK"))
-            )
+            // FIXED: Updated to use the new 'alertItem' property
+            .alert(item: $viewModel.alertItem) { alertItem in
+                Alert(
+                    title: Text(alertItem.title),
+                    message: Text(alertItem.message),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
         }
     }
 }
