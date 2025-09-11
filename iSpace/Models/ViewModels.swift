@@ -229,7 +229,9 @@ class AppViewModel: ObservableObject {
     @Published var alertItem: AlertItem?
     @Published var searchText = ""
     
+    // ADDED: This property is needed for the grace period logic.
     var lastInactiveDate: Date?
+    
     let dataService = DataService()
     private let onboardingKey = "hasCompletedOnboarding"
 
