@@ -16,7 +16,7 @@ struct MainTabView: View {
         TabView {
             NavigationStack {
                 CardDeckView(items: viewModel.filteredCardItems)
-                    .navigationTitle("My Cards")
+                    .navigationTitle("My Card")
                     .toolbar { toolbarContent }
                     .searchable(text: $viewModel.searchText, prompt: "Search cards")
             }
