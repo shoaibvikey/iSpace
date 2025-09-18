@@ -37,6 +37,9 @@ class ItemDetailViewModel: ObservableObject {
                 self.passwordDetails = try dataService.getDecryptedDetails(for: item)
             case .card:
                 self.cardDetails = try dataService.getDecryptedDetails(for: item)
+            case .document:
+                // This will be implemented in the DocumentDetailViewModel
+                break
             }
         } catch {
             alertItem = AlertItem(title: "Error", message: "Failed to decrypt data: \(error.localizedDescription)")
@@ -76,6 +79,14 @@ class AddItemViewModel: ObservableObject {
     @Published var cardNumberError: String?
     @Published var expiryError: String?
     @Published var cvvError: String?
+    
+    // NEW: Properties for the document flow
+    @Published var documentData: Data?
+    @Published var documentType: DocumentType?
+    
+    @Published var showPhotoPicker = false
+    @Published var showCameraPicker = false
+    @Published var showDocumentPicker = false
 
     static let draftKey = "addItemFormDraft"
     private var cancellables = Set<AnyCancellable>()
@@ -105,6 +116,14 @@ class AddItemViewModel: ObservableObject {
                 self?.saveDraft()
             }
             .store(in: &cancellables)
+            
+        // NEW: Subscriber to update state when data is picked
+        $documentData
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.validateFields()
+            }
+            .store(in: &cancellables)
     }
 
     var isFormValid: Bool {
@@ -130,6 +149,8 @@ class AddItemViewModel: ObservableObject {
             } else { return false }
             
             return true
+        case .document:
+            return documentData != nil
         }
     }
 
@@ -175,11 +196,20 @@ class AddItemViewModel: ObservableObject {
                 let details = CardDetails(cardHolderName: cardHolder, cardNumber: cardNumber, expiryDate: expiry, cvv: cvv)
                 try appViewModel.addData(details, id: newItemId.uuidString)
                 newItem = StoredItem(id: newItemId, name: name, type: selectedType)
+            case .document:
+                guard let data = documentData, let type = documentType else { return }
+                let fileName = "\(newItemId.uuidString).encrypted"
+                
+                try FileHelper.shared.save(data: data, with: fileName)
+                
+                let details = DocumentDetails(fileName: fileName, documentType: type)
+                try appViewModel.addData(details, id: newItemId.uuidString)
+                newItem = StoredItem(id: newItemId, name: name, type: selectedType)
             }
             appViewModel.addItem(newItem)
             clearDraft()
         } catch {
-            appViewModel.alertItem = AlertItem(title: "Error", message: "Error encoding data: \(error.localizedDescription)")
+            appViewModel.alertItem = AlertItem(title: "Error", message: "Error saving item: \(error.localizedDescription)")
         }
     }
     
@@ -229,7 +259,6 @@ class AppViewModel: ObservableObject {
     @Published var alertItem: AlertItem?
     @Published var searchText = ""
     
-    // ADDED: This property is needed for the grace period logic.
     var lastInactiveDate: Date?
     
     let dataService = DataService()
@@ -264,6 +293,16 @@ class AppViewModel: ObservableObject {
             return allPasswords
         } else {
             return allPasswords.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
+    
+    // NEW: A filtered list for documents
+    var filteredDocumentItems: [StoredItem] {
+        let allDocs = items.filter { $0.type == .document }
+        if searchText.isEmpty {
+            return allDocs
+        } else {
+            return allDocs.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
     

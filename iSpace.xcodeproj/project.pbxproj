@@ -184,7 +184,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					F58406362E6C3E450017350D = {
 						CreatedOnToolsVersion = 16.4;
@@ -341,6 +341,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -398,6 +399,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -415,7 +417,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iSpace/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iSpace;
+				INFOPLIST_KEY_NSCameraUsageDescription = "iSpace needs access to your camera to scan and save documents.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "iSpace uses Face ID to securely unlock your vault.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "iSpace needs access to your photo library to save your selected documents.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -447,7 +451,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iSpace/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iSpace;
+				INFOPLIST_KEY_NSCameraUsageDescription = "iSpace needs access to your camera to scan and save documents.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "iSpace uses Face ID to securely unlock your vault.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "iSpace needs access to your photo library to save your selected documents.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

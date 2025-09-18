@@ -18,6 +18,8 @@ struct StoredItem: Codable, Identifiable, Hashable {
             return "creditcard.fill"
         case .password:
             return "key.fill"
+        case .document:
+            return "filetext.fill"
         }
     }
 }
@@ -25,6 +27,7 @@ struct StoredItem: Codable, Identifiable, Hashable {
 enum ItemType: String, Codable {
     case card
     case password
+    case document
 }
 
 struct CardDetails: Codable, Hashable {
@@ -39,3 +42,15 @@ struct PasswordDetails: Codable, Hashable {
     var username: String
     var secret: String
 }
+
+struct DocumentDetails: Codable, Hashable {
+    let fileName: String
+    let documentType: DocumentType
+}
+
+// NEW: An enum to differentiate between document types.
+enum DocumentType: String, Codable {
+    case pdf
+    case image
+}
+

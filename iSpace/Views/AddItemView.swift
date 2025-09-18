@@ -17,20 +17,23 @@ struct AddItemView: View {
             Form {
                 Section(header: Text("Item Details")) {
                     ValidatedField(
-                        title: "Display Name (e.g., 'Google Account')",
+                        title: "Display Name (e.g., 'Passport')",
                         text: $viewModel.name,
                         error: viewModel.nameError
                     )
                     Picker("Item Type", selection: $viewModel.selectedType) {
                         Text("Password").tag(ItemType.password)
-                        Text("Credit Card").tag(ItemType.card)
+                        Text("Card").tag(ItemType.card)
+                        Text("Document").tag(ItemType.document)
                     }
                     .pickerStyle(SegmentedPickerStyle())
                 }
 
+                // FIXED: Added the missing case for .document
                 switch viewModel.selectedType {
                 case .password: passwordSection
                 case .card: cardSection
+                case .document: documentSection
                 }
             }
             .navigationTitle("Add New Item")
@@ -48,6 +51,15 @@ struct AddItemView: View {
                     }.disabled(!viewModel.isFormValid)
                 }
             }
+        }
+        .sheet(isPresented: $viewModel.showPhotoPicker) {
+            PhotoPicker(selectedImageData: $viewModel.documentData)
+        }
+        .sheet(isPresented: $viewModel.showCameraPicker) {
+            CameraPicker(selectedImageData: $viewModel.documentData)
+        }
+        .sheet(isPresented: $viewModel.showDocumentPicker) {
+            DocumentPicker(selectedFileData: $viewModel.documentData)
         }
     }
     
@@ -75,7 +87,7 @@ struct AddItemView: View {
             
             HStack {
                 ValidatedField(
-                    title: "Expiry (MM/YY)",
+                    title: "Expiry Date (MM/YY)",
                     text: $viewModel.expiry,
                     error: viewModel.expiryError
                 )
@@ -92,6 +104,41 @@ struct AddItemView: View {
                 .keyboardType(.numberPad)
                 .onChange(of: viewModel.cvv) { _, newValue in
                     viewModel.cvv = String(newValue.prefix(4))
+                }
+            }
+        }
+    }
+    
+    private var documentSection: some View {
+        Section(header: Text("Source")) {
+            Button(action: {
+                viewModel.documentType = .pdf
+                viewModel.showDocumentPicker = true
+            }) {
+                Label("Import PDF", systemImage: "doc.text.fill")
+            }
+            
+            Button(action: {
+                viewModel.documentType = .image
+                viewModel.showCameraPicker = true
+            }) {
+                Label("Take Photo", systemImage: "camera.fill")
+            }
+            
+            Button(action: {
+                viewModel.documentType = .image
+                viewModel.showPhotoPicker = true
+            }) {
+                Label("Choose from Library", systemImage: "photo.fill")
+            }
+            
+            if let data = viewModel.documentData {
+                HStack {
+                    Label("File Selected", systemImage: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                    Spacer()
+                    Text("\(data.count / 1024) KB")
+                        .foregroundColor(.secondary)
                 }
             }
         }
