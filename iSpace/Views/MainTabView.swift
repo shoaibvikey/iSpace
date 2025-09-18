@@ -16,7 +16,7 @@ struct MainTabView: View {
         TabView {
             NavigationStack {
                 CardDeckView(items: viewModel.filteredCardItems)
-                    .navigationTitle("My Card")
+                    .navigationTitle("My Cards")
                     .toolbar { toolbarContent }
                     .searchable(text: $viewModel.searchText, prompt: "Search cards")
             }
@@ -33,6 +33,9 @@ struct MainTabView: View {
             .tabItem {
                 Label("Passwords", systemImage: "key.fill")
             }
+
+            
+            
         }
         .sheet(isPresented: $showingAddItemSheet) {
             AddItemView()
