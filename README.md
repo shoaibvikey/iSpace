@@ -3,7 +3,6 @@
 
 iSpace is a secure, offline-first password and credit card manager for iOS, built entirely with SwiftUI. It leverages on-device security features like Face ID and the Keychain to ensure your sensitive data remains private and is never stored in the cloud.
 
-![Alt text for the image]("https://github.com/shoaibvikey/iSpace/blob/main/Screenshots/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-09-11%20at%2013.19.08.png")
 
 
 
